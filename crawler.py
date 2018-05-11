@@ -13,13 +13,7 @@ def crawl():
     soup = BeautifulSoup(html,'html.parser')
     titles = soup.select('tr > td > div.title.row > a.subject_link.deco')
 
-    if not os.path.isfile("temp.txt"):
-        fp= open("temp.txt","w",encoding="utf8")
-        for title in titles[4:]:
-            print(title.text,file=fp)
-        fp.close()
-        return
-    else:
+    if os.path.isfile("temp.txt"):
         fp_r= open("temp.txt","r",encoding="utf8")
         saved_titles=list()
         for i in fp_r:
@@ -27,11 +21,15 @@ def crawl():
         for i,title in enumerate(titles) :
             if any( a in title.text for a in ["pro","Pro","PRO","프로"]):
                 if not title.text in saved_titles and title.text:
-                    print(saved_titles)
-                    print(title.text)
-                    #sendmail(titles[i])
+                    sendmail(titles[i])
+    update_list(titles)
     print("crawled "+datetime.datetime.now(timezone('Asia/Seoul')).strftime("%H:%M:%S"))
 
+def update_list(titles):
+    fp = open("temp.txt", "w", encoding="utf8")
+    for title in titles[4:]:
+        print(title.text, file=fp)
+    fp.close()
 def sendmail(text):
     smtp = smtplib.SMTP('smtp.gmail.com', 587)
     smtp.ehlo()  # say Hello
