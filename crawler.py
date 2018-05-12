@@ -36,7 +36,7 @@ def sendmail(text):
     smtp.starttls()  # TLS 사용시 필요
     password = open("password.txt","r").readline()
     smtp.login('kdw9502@gmail.com', password)
-    msg = MIMEText(text)
+    msg = MIMEText(text,"html",_charset="utf-8")
     msg['Subject'] = '플포 프로 정보 ! '+datetime.datetime.now(timezone('Asia/Seoul')).strftime("%H:%M:%S")
     msg['To'] = 'kdw9502@gmail.com'
     smtp.sendmail('kdw9502@gmail.com', 'kdw9502@gmail.com', msg.as_string())
@@ -44,5 +44,5 @@ def sendmail(text):
     smtp.quit()
 while(True):
     crawl()
-    time.sleep(60)
+    time.sleep(30)
 
