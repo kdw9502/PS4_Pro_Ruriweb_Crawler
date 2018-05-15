@@ -8,11 +8,10 @@ import datetime
 from pytz import timezone
 
 def crawl():
-    req =requests.get("http://m.ruliweb.com/news/board/1020/list?cate=1")
+    req =requests.get("http://m.ruliweb.com/news/board/1020")
     html = req.text
     soup = BeautifulSoup(html,'html.parser')
     titles = soup.select('tr > td > div.title.row > a.subject_link.deco')
-
     if os.path.isfile("temp.txt"):
         fp_r= open("temp.txt","r",encoding="utf8")
         saved_titles=list()
@@ -21,6 +20,8 @@ def crawl():
         for i,title in enumerate(titles) :
             if any( a in title.text for a in ["pro","Pro","PRO","프로"]):
                 if not title.text in saved_titles and title.text:
+
+                    print("send email")
                     sendmail(titles[i])
     update_list(titles)
     print("crawled "+datetime.datetime.now(timezone('Asia/Seoul')).strftime("%H:%M:%S"))
