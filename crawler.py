@@ -35,15 +35,25 @@ def sendmail(text):
     smtp = smtplib.SMTP('smtp.gmail.com', 587)
     smtp.ehlo()  # say Hello
     smtp.starttls()  # TLS 사용시 필요
-    password = open("password.txt","r").readline()
-    smtp.login('kdw9502@gmail.com', password)
+
+    fp = open("password.txt","r")
+    id = fp.readline()
+    password = fp.readline()
+    smtp.login(id, password)
+
+    fp_r = open("recipients.txt", "r")
+    recipients= list()
+    for recipient in fp_r:
+        recipients.append(recipient)
+
     msg = MIMEText(text,"html",_charset="utf-8")
     msg['Subject'] = '플포 프로 정보 ! '+datetime.datetime.now(timezone('Asia/Seoul')).strftime("%H:%M:%S")
-    msg['To'] = 'kdw9502@gmail.com'
-    smtp.sendmail('kdw9502@gmail.com', 'kdw9502@gmail.com', msg.as_string())
+    msg['From'] = id
+    msg['To'] = ", ".join(recipients)
+    smtp.sendmail(id, recipients, msg.as_string())
 
     smtp.quit()
 while(True):
     crawl()
-    time.sleep(30)
+    time.sleep(10)
 
